@@ -2,7 +2,6 @@
 
 import re
 import json
-import os
 
 with open("words.json", "r") as f:
     words = json.load(f)
@@ -24,11 +23,6 @@ def make_regex(wordle_status):
     return re.compile(regex)
 
 
-def horizontal_print(items):
-    max_cols = os.get_terminal_size().columns
-    for i in range(len(items)%max_cols):
-        print(items[i])
-
 solved = False
 while not solved:
     word = input("Enter a word: ")
@@ -47,13 +41,8 @@ while not solved:
         elif status[i] == "2":
             wordle_status[i][1].append(word[i])
     counter = 0
-    # lst = []
     for i in words[::-1]:
         if make_regex(wordle_status).match(i):
             print(i)
-            # lst.append(i)
             counter += 1
-    # horizontal_print(lst)
     print(counter)
-    # print(wordle_status)
-    # print(make_regex(wordle_status))
