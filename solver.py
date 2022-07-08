@@ -30,6 +30,10 @@ while not solved:
     if len(word) != 5 or len(status) != 5 or not status.isdigit():
         print("Are you sure you entered the word right?")
         continue
+    if status == "22222":
+        solved = True
+        print("You solved it!")
+        continue
     for i in range(5):
         if status[i] == "0":
             for j in wordle_status:
