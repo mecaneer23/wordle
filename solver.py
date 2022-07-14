@@ -2,7 +2,6 @@
 
 import re
 import json
-from tkinter import W
 
 with open("words.json", "r") as f:
     words = json.load(f)
