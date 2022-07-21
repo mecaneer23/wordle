@@ -3,8 +3,10 @@
 from tkinter import Tk, ttk, StringVar, scrolledtext
 import solver
 
+
 def main():
-    board = solver.board # used by get_remaining
+    board = solver.board  # used by get_remaining
+
     def populate_board(event=None):
         try:
             remaining = solver.get_remaining(word.get(), status.get())
@@ -25,12 +27,15 @@ def main():
             remaining_output.configure(state="disabled")
             len_remaining.set(len(remaining))
         entry.focus()
+
     root = Tk()
     root.title("Wordle Solver")
     word = StringVar()
     status = StringVar()
     len_remaining = StringVar()
-    ttk.Label(root, text="Status: 0 for gray, 1 for yellow, 2 for green\nSolved: 22222").grid(row=0, columnspan=2)
+    ttk.Label(
+        root, text="Status: 0 for gray, 1 for yellow, 2 for green\nSolved: 22222"
+    ).grid(row=0, columnspan=2)
     remaining_output = scrolledtext.ScrolledText(root, width=20, height=10)
     remaining_output.grid(row=1, columnspan=3)
     remaining_output.configure(state="disabled")
