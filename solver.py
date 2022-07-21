@@ -2,8 +2,9 @@
 
 import re
 import json
+from pathlib import Path
 
-with open("words.json", "r") as f:
+with open(f"{Path(__file__).parent}/words.json", "r") as f:
     words = json.load(f)
 
 board = [[[] for _ in range(3)] for _ in range(5)]
@@ -85,7 +86,7 @@ if __name__ == "__main__":
     count = 1
     while True:
         try:
-            remaining = get_remaining(input("Enter a word: "), input("Enter a status: "))
+            remaining = get_remaining(input("Word: "), input("Status: "))
         except UserInputError as e:
             print(e)
             continue
