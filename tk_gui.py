@@ -4,7 +4,7 @@ from tkinter import Tk, ttk, StringVar, scrolledtext
 import solver
 
 def main():
-    board = solver.board
+    board = solver.board # used by get_remaining
     def populate_board(event=None):
         try:
             remaining = solver.get_remaining(word.get(), status.get())
