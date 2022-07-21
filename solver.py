@@ -5,36 +5,35 @@ import json
 
 with open("words.json", "r") as f:
     words = json.load(f)
-print("Status: 0 for gray, 1 for yellow, 2 for green\nSolved: 22222")
 
-wordle_status = [[[] for _ in range(3)] for _ in range(5)]
+board = [[[] for _ in range(3)] for _ in range(5)]
 
 
-def make_regex(wordle_status):
+class UserInputError(Exception):
+    pass
+
+
+class Solved(Exception):
+    pass
+
+
+def make_regex(board):
     regex = ""
     for i in range(5):
-        if wordle_status[i][2] != []:
-            regex += wordle_status[i][2][0]
+        if board[i][2] != []:
+            regex += board[i][2][0]
         else:
-            # if wordle_status[i][1] != []:
-            #     regex += "(["
-            #     for j in wordle_status[i][1]:
-            #         regex += j
-            #     regex += "])"
-            # else:
-                regex += "("
-            # if wordle_status[i][0] != []:
-                regex += "[^"
-                for j in wordle_status[i][0]:
-                    regex += j
-                regex += "])"
+            regex += "[^"
+            for j in board[i][0]:
+                regex += j
+            regex += "]"
     return regex
 
 
-def make_second_regex(wordle_status):
+def make_second_regex(board):
     output = []
     for i in range(5):
-        for j in wordle_status[i][1]:
+        for j in board[i][1]:
             if j not in output:
                 output.append(j)
     for i in range(len(output)):
@@ -42,50 +41,56 @@ def make_second_regex(wordle_status):
     return output
 
 
-solved = False
-while not solved:
-    for i in range(5):
-        wordle_status[i][1] = []
-    word = input("Enter a word: ")
-    status = input("Enter a status: ")
+def get_remaining(word, status):
     if len(word) != 5 or len(status) != 5 or not status.isdigit():
-        print("Are you sure you entered the word right?")
-        continue
+        raise UserInputError("Are you sure you entered the word and status correctly?")
     if status == "22222":
-        solved = True
-        print("You solved it!")
-        continue
+        raise Solved("You solved it!")
     for i in range(5):
+        board[i][1] = []
         if status[i] == "0":
-            for j in wordle_status:
+            for j in board:
                 if word[i] not in j[0]:
                     j[0].append(word[i])
         elif status[i] == "1":
             for j in range(5):
                 if j != i:
-                    if word[i] not in wordle_status[j][1]:
-                        wordle_status[j][1].append(word[i])
+                    if word[i] not in board[j][1]:
+                        board[j][1].append(word[i])
                 else:
-                    if word[i] not in wordle_status[i][0]:
-                        wordle_status[i][0].append(word[i])
+                    if word[i] not in board[i][0]:
+                        board[i][0].append(word[i])
         elif status[i] == "2":
-            if word[i] not in wordle_status[i][2]:
-                wordle_status[i][2].append(word[i])
+            if word[i] not in board[i][2]:
+                board[i][2].append(word[i])
     for i in range(5):
-        for j in range(len(wordle_status[i])):
-            if wordle_status[i][0][j] in wordle_status[i][1]:
-                wordle_status[i][1].remove(wordle_status[i][0][j])
+        for j in range(len(board[i][0])):
+            if not board[i][0][j]:
+                continue
+            if board[i][0][j] in board[i][1]:
+                board[i][1].remove(board[i][0][j])
     remaining_words = []
-    temp = []
-    for i in words[::-1]:
-        if re.compile(make_regex(wordle_status)).match(i):
+    for i in words:
+        if re.compile(make_regex(board)).match(i):
             remaining_words.append(i)
-    for pattern in make_second_regex(wordle_status):
+    for pattern in make_second_regex(board):
+        temp = []
         for i in remaining_words:
             if re.compile(pattern).match(i):
                 temp.append(i)
         remaining_words = temp
-        temp = []
-    for i in remaining_words:
-        print(i)
-    print(len(remaining_words))
+    return remaining_words
+
+
+if __name__ == "__main__":
+    print("Status: 0 for gray, 1 for yellow, 2 for green\nSolved: 22222")
+    while True:
+        try:
+            remaining = get_remaining(input("Enter a word: "), input("Enter a status: "))
+        except UserInputError as e:
+            print(e)
+            continue
+        except Solved as e:
+            print(e)
+            break
+        print("\n".join(remaining), len(remaining), sep="\n")
