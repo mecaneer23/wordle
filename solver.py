@@ -65,8 +65,6 @@ def get_remaining(word, status):
                 board[i][2].append(word[i])
     for i in range(5):
         for j in range(len(board[i][0])):
-            if not board[i][0][j]:
-                continue
             if board[i][0][j] in board[i][1]:
                 board[i][1].remove(board[i][0][j])
     remaining_words = []
@@ -84,6 +82,7 @@ def get_remaining(word, status):
 
 if __name__ == "__main__":
     print("Status: 0 for gray, 1 for yellow, 2 for green\nSolved: 22222")
+    count = 1
     while True:
         try:
             remaining = get_remaining(input("Enter a word: "), input("Enter a status: "))
@@ -94,3 +93,5 @@ if __name__ == "__main__":
             print(e)
             break
         print("\n".join(remaining), len(remaining), sep="\n")
+        count += 1
+    print(f"{count} words entered")
