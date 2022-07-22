@@ -33,10 +33,7 @@ def reorder(words):
                 break
         else:
             test_2.append(i)
-    output = test_2.copy()
-    if len(output) > 2:
-        output[-2] += "\n"
-    return output
+    return test_2
 
 
 def make_regex(board):
@@ -62,7 +59,7 @@ def make_second_regex(board):
 
 
 def get_remaining(word, status):
-    if len(word) != 5 or len(status) != 5 or not status.isdigit():
+    if len(word) != 5 or len(status) != 5 or not status.isdigit() or not word.isalpha():
         raise UserInputError("Are you sure you entered the word and status correctly?")
     if status == "22222":
         raise Solved("You solved it!")
@@ -104,15 +101,22 @@ def get_remaining(word, status):
 if __name__ == "__main__":
     print("Status: 0 for gray, 1 for yellow, 2 for green\nSolved: 22222")
     count = 1
+    last_word = ""
     while True:
         try:
-            remaining = get_remaining(input("Word: "), input("Status: "))
+            output = reorder(
+                get_remaining(input("Word: ") or last_word, input("Status: "))
+            )
         except UserInputError as e:
             print(e)
             continue
         except Solved as e:
             print(e)
             break
-        print("\n".join(reorder(remaining)), len(remaining), sep="\n")
+        if len(output) == 0:
+            print("No words left")
+            break
+        last_word = output[-1] if output else ""
+        print("\n".join(output[:-1]), f"\n{last_word}", len(output), sep="\n")
         count += 1
     print(f"{count} words entered")
