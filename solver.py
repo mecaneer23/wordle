@@ -18,6 +18,27 @@ class Solved(Exception):
     pass
 
 
+def reorder(words):
+    test_1 = []
+    for i in "qjzxvkwyfbghmpduclsntoirae":
+        for j in words[::-1]:
+            if i in j:
+                if j not in test_1:
+                    test_1.append(j)
+    test_2 = []
+    for i in test_1:
+        for j in range(5):
+            if i.count(i[j]) != 1:
+                test_2.insert(0, i)
+                break
+        else:
+            test_2.append(i)
+    output = test_2
+    if len(output) > 2:
+        output[-2] += "\n"
+    return output
+
+
 def make_regex(board):
     regex = ""
     for i in range(5):
@@ -93,6 +114,6 @@ if __name__ == "__main__":
         except Solved as e:
             print(e)
             break
-        print("\n".join(remaining), len(remaining), sep="\n")
+        print("\n".join(reorder(remaining)), len(remaining), sep="\n")
         count += 1
     print(f"{count} words entered")

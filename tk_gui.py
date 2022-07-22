@@ -9,7 +9,7 @@ def main():
 
     def populate_board(event=None):
         try:
-            remaining = solver.get_remaining(word.get(), status.get())
+            remaining = solver.reorder(solver.get_remaining(word.get(), status.get()))[::-1]
         except solver.UserInputError as e:
             len_remaining.set(e)
             word.set("")
