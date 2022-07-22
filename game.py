@@ -2,6 +2,7 @@
 
 import json
 import random
+import sys
 
 
 class colors:
@@ -14,8 +15,11 @@ class colors:
     RESET = "\033[0m"
 
 
-with open("words.json", "r") as f:
-    secret_word = random.choice(json.load(f)).upper()
+if len(sys.argv) > 1:
+    secret_word = sys.argv[1].upper()
+else:
+    with open("words.json", "r") as f:
+        secret_word = random.choice(json.load(f)).upper()
 
 
 def format_board(board):
