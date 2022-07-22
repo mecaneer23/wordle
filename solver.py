@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from pprint import pprint
 import re
 import json
 from pathlib import Path
@@ -33,7 +34,7 @@ def reorder(words):
                 break
         else:
             test_2.append(i)
-    output = test_2
+    output = test_2.copy()
     if len(output) > 2:
         output[-2] += "\n"
     return output
@@ -58,9 +59,7 @@ def make_second_regex(board):
         for j in board[i][1]:
             if j not in output:
                 output.append(j)
-    for i in range(len(output)):
-        output[i] = f".*{output[i]}.*"
-    return output
+    return [f".*{i}.*" for i in output]
 
 
 def get_remaining(word, status):
@@ -70,18 +69,19 @@ def get_remaining(word, status):
         raise Solved("You solved it!")
     for i in range(5):
         board[i][1] = []
+    for i in range(5):
         if status[i] == "0":
             for j in board:
                 if word[i] not in j[0]:
                     j[0].append(word[i])
         elif status[i] == "1":
             for j in range(5):
-                if j != i:
-                    if word[i] not in board[j][1]:
-                        board[j][1].append(word[i])
-                else:
+                if j == i:
                     if word[i] not in board[i][0]:
                         board[i][0].append(word[i])
+                else:
+                    if word[i] not in board[j][1]:
+                        board[j][1].append(word[i])
         elif status[i] == "2":
             if word[i] not in board[i][2]:
                 board[i][2].append(word[i])
@@ -98,7 +98,7 @@ def get_remaining(word, status):
         for i in remaining_words:
             if re.compile(pattern).match(i):
                 temp.append(i)
-        remaining_words = temp
+        remaining_words = temp.copy()
     return remaining_words
 
 
