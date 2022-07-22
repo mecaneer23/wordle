@@ -61,6 +61,9 @@ def make_second_regex(board):
 def get_remaining(word, status):
     if len(word) != 5 or len(status) != 5 or not status.isdigit() or not word.isalpha():
         raise UserInputError("Are you sure you entered the word and status correctly?")
+    for i in status:
+        if i not in "012":
+            raise UserInputError("Status must be just (0, 1, 2)")
     if status == "22222":
         raise Solved("You solved it!")
     for i in range(5):
