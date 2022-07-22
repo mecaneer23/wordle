@@ -48,9 +48,9 @@ while True:
         continue
     board.append(word)
     print(format_board(board))
-    if len(board) == 6:
-        print(f"You lose! The word was {secret_word}")
-        break
     if word == secret_word:
         print("You solved it!")
+        break
+    if len(board) == 6:
+        print(f"You lose! The word was {secret_word}")
         break
