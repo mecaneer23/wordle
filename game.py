@@ -3,6 +3,7 @@
 import json
 import random
 import sys
+from pathlib import Path
 
 
 class colors:
@@ -18,7 +19,7 @@ class colors:
 if len(sys.argv) > 1:
     secret_word = sys.argv[1].upper()
 else:
-    with open("words.json", "r") as f:
+    with open(f"{Path(__file__).parent}/words.json", "r") as f:
         secret_word = random.choice(json.load(f)).upper()
 
 
