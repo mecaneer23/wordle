@@ -112,7 +112,8 @@
             return /^[0-9]+$/.test(string);
         }
 
-        function get_remaining(word, status) {
+        function get_remaining(l_word, status) {
+            let word = l_word.toLowerCase();
             if (
                 word.length != 5 ||
                 status.length != 5 ||

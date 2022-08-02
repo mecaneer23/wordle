@@ -58,7 +58,8 @@ def make_second_regex(board):
     return [f".*{i}.*" for i in output]
 
 
-def get_remaining(word, status):
+def get_remaining(l_word, status):
+    word = l_word.lower()
     if len(word) != 5 or len(status) != 5 or not status.isdigit() or not word.isalpha():
         raise UserInputError("Are you sure you entered the word and status correctly?")
     for i in status:
