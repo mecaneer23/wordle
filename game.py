@@ -6,14 +6,13 @@ import sys
 from pathlib import Path
 
 
-class colors:
-    RED = "\033[91m"
-    YELLOW = "\033[93m"
-    GREEN = "\033[92m"
-    CYAN = "\033[96m"
-    BLUE = "\033[94m"
-    MAGENTA = "\033[95m"
-    RESET = "\033[0m"
+RED = "\033[91m"
+YELLOW = "\033[93m"
+GREEN = "\033[92m"
+CYAN = "\033[96m"
+BLUE = "\033[94m"
+MAGENTA = "\033[95m"
+RESET = "\033[0m"
 
 
 if len(sys.argv) > 1:
@@ -29,9 +28,9 @@ def format_board(board):
         output += "| "
         for j in range(5):
             if i[j] == secret_word[j]:
-                output += colors.GREEN + i[j] + colors.RESET
+                output += GREEN + i[j] + RESET
             elif i[j] in secret_word:
-                output += colors.YELLOW + i[j] + colors.RESET
+                output += YELLOW + i[j] + RESET
             else:
                 output += i[j]
         output += " |\n"
