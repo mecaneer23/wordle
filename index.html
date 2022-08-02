@@ -22,19 +22,17 @@
 
 <body>
     <div id="center">
-        <p>Status: 0 for gray, 1 for yellow, 2 for green<br />Solved: 22222</p>
+        <div>Status: 0 for gray, 1 for yellow, 2 for green<br />Solved: 22222</div>
         <textarea id="remaining_output" cols="20" rows="10" readonly></textarea>
-        <p id="len_remaining"></p>
-        <p>
+        <div id="len_remaining"></div>
+        <div>
             <span>Enter a word: <input type="text" id="word" autofocus></span>
-        </p>
-        <p>
+        </div>
+        <div>
             <span>Enter a status: <input type="text" id="status"></span>
-        </p>
+        </div>
         <button id="submit" onclick="populate_board()">Submit</button>
     </div>
-
-
 
     <script>
         let words = undefined;
@@ -222,7 +220,7 @@
             }
             document.getElementById("word").focus();
         }
-        document.body.addEventListener("keyup", function(event) {
+        document.body.addEventListener("keyup", function (event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
                 document.getElementById("submit").click();
