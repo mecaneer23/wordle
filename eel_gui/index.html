@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Solver</title>
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div id="center">
+        <p>Status: 0 for gray, 1 for yellow, 2 for green<br />Solved: 22222</p>
+        <textarea id="remaining_output" cols="20" rows="10" readonly></textarea>
+        <p id="len_remaining"></p>
+        <p>
+            <span>Enter a word: <input type="text" id="word" autofocus></span>
+        </p>
+        <p>
+            <span>Enter a status: <input type="text" id="status"></span>
+        </p>
+        <button id="submit" onclick="populate_board()">Submit</button>
+    </div>
+    <script>
+        async function populate_board() {
+            let successful = true;
+            let remaining = undefined;
+            try {
+                remaining = await eel.solve(document.getElementById("word").value || last_word, document.getElementById("status").value)();
+                console.log(remaining);
+            } catch (e) {
+                successful = false;
+                if (e instanceof eel.UserInputError) {
+                    document.getElementById("len_remaining").innerHTML = e.message;
+                    document.getElementById("word").value = "";
+                    document.getElementById("status").value = "";
+                } else if (e instanceof eel.Solved) {
+                    document.getElementById("len_remaining").innerHTML = e.message;
+                    return;
+                } else {
+                    throw e;
+                }
+            }
+            if (successful) {
+                document.getElementById("word").value = "";
+                document.getElementById("status").value = "";
+                remaining_output = document.getElementById("remaining_output");
+                remaining_output.value = "";
+                for (i of remaining) {
+                    remaining_output.value += i + "\n";
+                }
+                document.getElementById("len_remaining").innerHTML = remaining.length;
+            }
+            document.getElementById("word").focus();
+        }
+        document.body.addEventListener("keyup", function(event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                document.getElementById("submit").click();
+            }
+        });
+    </script>
+</body>
+</html>
