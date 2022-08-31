@@ -18,22 +18,29 @@ class Solved(Exception):
     pass
 
 
-def reorder(words):
-    test_1 = []
+def _reorder_by_letter(words):
+    output = []
     for i in "qjzxvkwyfbghmpduclsntoirae":
         for j in words[::-1]:
-            if i in j:
-                if j not in test_1:
-                    test_1.append(j)
-    test_2 = []
-    for i in test_1:
+            if i in j and j not in output:
+                output.append(j)
+    return output
+
+
+def _reorder_by_occurrences(words):
+    output = []
+    for i in words:
         for j in range(5):
             if i.count(i[j]) != 1:
-                test_2.insert(0, i)
+                output.insert(0, i)
                 break
         else:
-            test_2.append(i)
-    return test_2
+            output.append(i)
+    return output
+
+
+def reorder(words):
+    return _reorder_by_occurrences(_reorder_by_letter(words))
 
 
 def make_regex(board):
@@ -41,11 +48,11 @@ def make_regex(board):
     for i in range(5):
         if board[i][2] != []:
             regex += board[i][2][0]
-        else:
-            regex += "[^"
-            for j in board[i][0]:
-                regex += j
-            regex += "]"
+            continue
+        regex += "[^"
+        for j in board[i][0]:
+            regex += j
+        regex += "]"
     return regex
 
 
