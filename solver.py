@@ -4,12 +4,6 @@ import re
 import json
 from pathlib import Path
 
-with open(f"{Path(__file__).parent}/words.json", "r") as f:
-    words = json.load(f)
-
-board = [[[] for _ in range(3)] for _ in range(5)]
-
-
 class UserInputError(Exception):
     pass
 
@@ -39,8 +33,8 @@ def _reorder_by_occurrences(words):
     return output
 
 
-def reorder(words):
-    return _reorder_by_occurrences(_reorder_by_letter(words))
+def reorder(words, board):
+    return _reorder_by_occurrences(_reorder_by_letter(words)), board
 
 
 def make_regex(board):
@@ -65,8 +59,22 @@ def make_second_regex(board):
     return [f".*{i}.*" for i in output]
 
 
-def get_remaining(l_word, status):
-    word = l_word.lower()
+def zero_maybes(board):
+    for i in range(5):
+        board[i][1] = []
+    return board
+
+
+def remove_nos_from_maybes(board):
+    for i in range(5):
+        letter = board[i]
+        for j in range(len(letter[0])):
+            if letter[0][j] in letter[1]:
+                letter[1].remove(letter[0][j])
+    return board
+
+
+def guard_inputs(word, status):
     if len(word) != 5 or len(status) != 5 or not status.isdigit() or not word.isalpha():
         raise UserInputError("Are you sure you entered the word and status correctly?")
     for i in status:
@@ -74,13 +82,15 @@ def get_remaining(l_word, status):
             raise UserInputError("Status must be just (0, 1, 2)")
     if status == "22222":
         raise Solved("You solved it!")
-    for i in range(5):
-        board[i][1] = []
+    return word, status
+
+
+def add_to_board(word, status, board):
     for i in range(5):
         if status[i] == "0":
-            for j in board:
-                if word[i] not in j[0]:
-                    j[0].append(word[i])
+            for letter in board:
+                if word[i] not in letter[0]:
+                    letter[0].append(word[i])
         elif status[i] == "1":
             for j in range(5):
                 if j == i:
@@ -92,13 +102,14 @@ def get_remaining(l_word, status):
         elif status[i] == "2":
             if word[i] not in board[i][2]:
                 board[i][2].append(word[i])
-    for i in range(5):
-        for j in range(len(board[i][0])):
-            if board[i][0][j] in board[i][1]:
-                board[i][1].remove(board[i][0][j])
+    return board
+
+
+def get_remaining(words, board):
     remaining_words = []
+    first_regex = re.compile(make_regex(board))
     for i in words:
-        if re.compile(make_regex(board)).match(i):
+        if first_regex.match(i):
             remaining_words.append(i)
     for pattern in make_second_regex(board):
         temp = []
@@ -106,17 +117,21 @@ def get_remaining(l_word, status):
             if re.compile(pattern).match(i):
                 temp.append(i)
         remaining_words = temp.copy()
-    return remaining_words
+    return remaining_words, board
 
 
 if __name__ == "__main__":
     print("Status: 0 for gray, 1 for yellow, 2 for green\nSolved: 22222")
     count = 1
     last_word = ""
+    board = [[[] for _ in range(3)] for _ in range(5)] # [no, yes, maybe] for letter in range(5)
+    with open(f"{Path(__file__).parent}/words.json", "r") as f:
+        words = json.load(f)
+
     while True:
         try:
-            output = reorder(
-                get_remaining(input("Word: ") or last_word, input("Status: "))
+            output, board = reorder(
+               *get_remaining(words, remove_nos_from_maybes(add_to_board(*guard_inputs((input("Word: ") or last_word).lower(), input("Status: ")), zero_maybes(board))))
             )
         except UserInputError as e:
             print(e)
