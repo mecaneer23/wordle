@@ -113,9 +113,10 @@ def get_remaining(words, board):
             remaining_words.append(i)
     for pattern in make_second_regex(board):
         temp = []
-        for i in remaining_words:
-            if re.compile(pattern).match(i):
-                temp.append(i)
+        second_regex = re.compile(pattern)
+        for word in remaining_words:
+            if second_regex.match(word):
+                temp.append(word)
         remaining_words = temp.copy()
     return remaining_words, board
 
