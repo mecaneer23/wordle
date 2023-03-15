@@ -4,6 +4,7 @@ import re
 import json
 from pathlib import Path
 
+
 class UserInputError(Exception):
     pass
 
@@ -121,18 +122,52 @@ def get_remaining(words, board):
     return remaining_words, board
 
 
+def init_board():
+    return [
+        [[] for _ in range(3)] for _ in range(5)
+    ]  # [no, yes, maybe] for letter in range(5)
+
+
+def init_words_list():
+    with open(f"{Path(__file__).parent}/words.json", "r") as f:
+        return json.load(f)
+
+
+def get_words_board_wrapper(word, status, board=init_board()):
+    """wraps many functions defined to make running much simpler
+
+    Args:
+        word (str): a word to test
+        status (str): a string representation of an input status (consists of 0, 1, 2)
+        board (list of lists - board object): this is the current status of the entire board so far. If no board is provided, it will default to a blank board
+
+    Returns:
+        words (list): ordered list of possible remaining words given the inputs
+        board: the input board so this function can be called in a loop
+    """
+    return reorder(
+        *get_remaining(
+            init_words_list(),
+            remove_nos_from_maybes(
+                add_to_board(
+                    *guard_inputs(word.lower(), status),
+                    zero_maybes(board),
+                ),
+            ),
+        )
+    )
+
+
 if __name__ == "__main__":
     print("Status: 0 for gray, 1 for yellow, 2 for green\nSolved: 22222")
     count = 1
     last_word = ""
-    board = [[[] for _ in range(3)] for _ in range(5)] # [no, yes, maybe] for letter in range(5)
-    with open(f"{Path(__file__).parent}/words.json", "r") as f:
-        words = json.load(f)
+    board = init_board()
 
     while True:
         try:
-            output, board = reorder(
-               *get_remaining(words, remove_nos_from_maybes(add_to_board(*guard_inputs((input("Word: ") or last_word).lower(), input("Status: ")), zero_maybes(board))))
+            output, board = get_words_board_wrapper(
+                input("Word: ") or last_word, input("Status: "), board
             )
         except UserInputError as e:
             print(e)
