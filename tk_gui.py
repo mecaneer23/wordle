@@ -5,11 +5,13 @@ import solver
 
 
 def main():
-    board = solver.board  # used by get_remaining
-
     def populate_board(event=None):
+        board = solver.init_board()
         try:
-            remaining = solver.reorder(solver.get_remaining(word.get(), status.get()))[::-1]
+            remaining, board = solver.get_words_board_wrapper(
+                word.get(), status.get(), board
+            )
+            remaining = remaining[::-1]
         except solver.UserInputError as e:
             len_remaining.set(e)
             word.set("")
