@@ -5,9 +5,15 @@ import solver
 
 eel.init("eel_gui")
 
+board = solver.init_board()
+
 @eel.expose
 def solve(word, status):
-    return solver.reorder(solver.get_remaining(word, status))[::-1]
+    global board
+    remaining, board = solver.get_words_board_wrapper(
+        word, status, board
+    )
+    return remaining[::-1]
 
 @eel.expose
 class UserInputError(solver.UserInputError):
