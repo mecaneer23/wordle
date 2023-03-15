@@ -4,7 +4,18 @@
 
 Wordle is a simple guessing game, similar to Mastermind. In Wordle, one has six attempts to guess the correct word. Every attempt, another player (or a computer) will provide information about the correctness of a given input.
 
-This repository contains two important files: a [wordle game](game.py), and a [wordle solver](solver.py). An eventual goal is to implement it in multiple gui versions, but right now it is only supported in the terminal, in a Tkinter window, or in the browser.
+This repository provides both a [wordle game](game.py), and [wordle solver(s)](solver.py).
+
+Multiple gui versions are also supported:
+
+- In [terminal](solver.py) (as previously mentioned)
+- In a [Tkinter window](tk_gui.py) (or [custom themed version](ctk_gui.py))
+- In the browser (using a [JavaScript implementation](index.html))
+- In the browser (using a [Python implementation](eel_gui.py) (eel.py))
+
+There is also a [node.js solver](solver.js) for the terminal.
+
+Every solver uses the same [words.json](words.json) file to source the possible words.
 
 ## Playing the game
 
